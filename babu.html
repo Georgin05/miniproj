@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern WMS | Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+       :root {
+    --primary: #FFD700;         /* Gold */
+    --primary-dark: #d4b000;
+    --secondary: #2a2a2a;       /* Light surface */
+    --dark: #f5f5f5;            /* Light text */
+    --light: #121212;           /* Dark background */
+    --surface: #1e1e1e;
+    --surface-light: #2a2a2a;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --gray: #aaaaaa;
+    --gray-light: #333333;
+}
+
+/* Global Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: var(--light);
+    color: var(--dark);
+    line-height: 1.6;
+}
+
+/* Sidebar Styles */
+.sidebar {
+    width: 250px;
+    background: var(--surface-light);
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.sidebar-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--gray-light);
+    display: flex;
+    align-items: center;
+    color: var(--primary);
+}
+
+.sidebar-menu {
+    padding: 1rem 0;
+}
+.container {
+    display: flex;
+    min-height: 100vh;
+}
+
+.user-menu {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.notification-icon {
+    position: relative;
+    cursor: pointer;
+    color: var(--gray);
+}
+
+.notification-badge {
+    position: absolute;
+    top: -6px;
+    right: -10px;
+    background: var(--danger);
+    color: white;
+    font-size: 0.65rem;
+    padding: 2px 6px;
+    border-radius: 50%;
+}
+
+.user-menu img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--primary);
+}
+.zoom-img {
+    transition: transform 0.3s ease;
+}
+
+.zoom-img:hover {
+    transform: scale(1.2); /* 1.2 = 120% size */
+}
+
+
+.stats-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.charts-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.activity-list {
+    list-style: none;
+    padding: 0;
+}
+
+.activity-item {
+    display: flex;
+    align-items: center;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--gray-light);
+}
+
+.activity-time {
+    margin-left: auto;
+    color: var(--gray);
+    font-size: 0.75rem;
+}
+
+
+.menu-title {
+    padding: 0.5rem 1.5rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: var(--gray);
+    font-weight: 600;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1.5rem;
+    color: var(--dark);
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.menu-item:hover {
+    background-color: var(--primary);
+    color: #000;
+}
+
+.menu-item.active {
+    background-color: rgba(255, 215, 0, 0.1);
+    color: var(--primary);
+    border-left: 3px solid var(--primary);
+}
+
+.menu-item i {
+    margin-right: 10px;
+    width: 20px;
+    text-align: center;
+}
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    padding: 1.5rem;
+    background-color: var(--light);
+    overflow-y: auto;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--gray-light);
+}
+
+.header h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--primary);
+}
+
+/* Cards and Widgets */
+.stat-card,
+.chart-card,
+.activity-card {
+    background: var(--surface);
+    color: var(--dark);
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--gray-light);
+}
+
+.stat-title,
+.stat-change,
+.activity-content p {
+    color: var(--gray);
+}
+
+.stat-icon {
+    color: white;
+}
+
+.stat-icon.blue { background-color: var(--primary-dark); }
+.stat-icon.green { background-color: var(--success); }
+.stat-icon.orange { background-color: var(--warning); }
+.stat-icon.red { background-color: var(--danger); }
+
+.chart-placeholder {
+    background-color: var(--surface-light);
+    color: var(--gray);
+}
+
+.chart-btn {
+    background: none;
+    border: none;
+    color: var(--gray);
+    cursor: pointer;
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+}
+
+.chart-btn.active {
+    background-color: var(--primary);
+    color: #000;
+}
+
+/* Activity Log */
+.activity-icon {
+    background-color: rgba(255, 215, 0, 0.1);
+    color: var(--primary);
+}
+
+/* Mobile Styles – inherit the same color logic */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        position: fixed;
+        bottom: 0;
+        height: 60px;
+        overflow-y: auto;
+        background: var(--surface);
+    }
+
+    .sidebar-header {
+        display: none;
+    }
+
+    .sidebar-menu {
+        display: flex;
+        padding: 0;
+    }
+
+    .menu-item {
+        flex-direction: column;
+        padding: 0.5rem;
+        font-size: 0.7rem;
+        text-align: center;
+        flex: 1;
+    }
+
+    .menu-item i {
+        margin-right: 0;
+        margin-bottom: 5px;
+    }
+
+    .main-content {
+        padding-bottom: 80px;
+    }
+
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .user-menu {
+        margin-top: 1rem;
+        width: 100%;
+        justify-content: space-between;
+    }
+}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i class="fas fa-warehouse"></i>
+                <h2>Modern WMS</h2>
+            </div>
+            <div class="sidebar-menu">
+                <div class="menu-title">Main</div>
+                <a href="#" class="menu-item active">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-boxes"></i>
+                    <span>Inventory</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-truck"></i>
+                    <span>Receiving</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-shipping-fast"></i>
+                    <span>Shipping</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-exchange-alt"></i>
+                    <span>Transfers</span>
+                </a>
+
+                <div class="menu-title">Management</div>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-users"></i>
+                    <span>Users</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>Locations</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-barcode"></i>
+                    <span>Products</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Reports</span>
+                </a>
+
+                <div class="menu-title">System</div>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Help</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="header">
+                <h1>Dashboard Overview</h1>
+                <div class="user-menu">
+                    <div class="notification-icon">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </div>
+                    <div class="user-info">
+                        <h4>Geo</h4>
+                        <p>Warehouse Manager</p>
+                    </div>
+                    <img src="LUFFY.jpg" class="zoom-img" alt="User">
+                </div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div>
+                            <div class="stat-title">Total Inventory</div>
+                            <div class="stat-value">1,248</div>
+                            <div class="stat-change positive">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>12% from last month</span>
+                            </div>
+                        </div>
+                        <div class="stat-icon blue">
+                            <i class="fas fa-boxes"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div>
+                            <div class="stat-title">Orders Today</div>
+                            <div class="stat-value">48</div>
+                            <div class="stat-change positive">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>5% from yesterday</span>
+                            </div>
+                        </div>
+                        <div class="stat-icon green">
+                            <i class="fas fa-clipboard-list"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div>
+                            <div class="stat-title">Pending Receipts</div>
+                            <div class="stat-value">12</div>
+                            <div class="stat-change negative">
+                                <i class="fas fa-arrow-down"></i>
+                                <span>3% from last week</span>
+                            </div>
+                        </div>
+                        <div class="stat-icon orange">
+                            <i class="fas fa-dolly"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div>
+                            <div class="stat-title">Low Stock Items</div>
+                            <div class="stat-value">27</div>
+                            <div class="stat-change positive">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>8% resolved</span>
+                            </div>
+                        </div>
+                        <div class="stat-icon red">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="charts-container">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <div class="chart-title">Inventory Movement</div>
+                        <div class="chart-actions">
+                            <button class="chart-btn active">Daily</button>
+                            <button class="chart-btn">Weekly</button>
+                            <button class="chart-btn">Monthly</button>
+                        </div>
+                    </div>
+                    <div class="chart-placeholder">
+                        <i class="fas fa-chart-line pulse" style="font-size: 2rem;"></i>
+                        <span style="margin-left: 10px;">Inventory movement chart</span>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <div class="chart-title">Storage Utilization</div>
+                        <div class="chart-actions">
+                            <button class="chart-btn active">Zones</button>
+                            <button class="chart-btn">Categories</button>
+                        </div>
+                    </div>
+                    <div class="chart-placeholder">
+                        <i class="fas fa-chart-pie pulse" style="font-size: 2rem;"></i>
+                        <span style="margin-left: 10px;">Storage utilization chart</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="activity-card">
+                <div class="chart-header">
+                    <div class="chart-title">Recent Activity</div>
+                    <div class="chart-actions">
+                        <button class="chart-btn">View All</button>
+                    </div>
+                </div>
+                <ul class="activity-list">
+                    <li class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-shipping-fast"></i>
+                        </div>
+                        <div class="activity-content">
+                            <h4>Order #1042 shipped</h4>
+                            <p>3 items shipped to customer</p>
+                        </div>
+                        <div class="activity-time">10 min ago</div>
+                    </li>
+                    <li class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-dolly"></i>
+                        </div>
+                        <div class="activity-content">
+                            <h4>Receipt #421 received</h4>
+                            <p>15 items received from supplier</p>
+                        </div>
+                        <div class="activity-time">25 min ago</div>
+                    </li>
+                    <li class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-exchange-alt"></i>
+                        </div>
+                        <div class="activity-content">
+                            <h4>Transfer initiated</h4>
+                            <p>8 items moved to Zone B</p>
+                        </div>
+                        <div class="activity-time">1 hour ago</div>
+                    </li>
+                    <li class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="activity-content">
+                            <h4>Low stock alert</h4>
+                            <p>Product #A42-56 below threshold</p>
+                        </div>
+                        <div class="activity-time">2 hours ago</div>
+                    </li>
+                    <li class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="activity-content">
+                            <h4>New user added</h4>
+                            <p>Warehouse operator account created</p>
+                        </div>
+                        <div class="activity-time">4 hours ago</div>
+                    </li>
+                </ul>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Mobile menu toggle functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Toggle active state for menu items
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    menuItems.forEach(i => i.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+
+            // Toggle chart periods
+            const chartBtns = document.querySelectorAll('.chart-btn');
+            chartBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const parent = this.parentElement;
+                    parent.querySelectorAll('.chart-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    // Here you would typically update the chart data
+                });
+            });
+
+            // Simulate loading data
+            setTimeout(() => {
+                const placeholders = document.querySelectorAll('.chart-placeholder');
+                placeholders.forEach(p => {
+                    p.innerHTML = '<canvas id="chart' + Math.floor(Math.random() * 100) + '"></canvas>';
+                    // In a real app, you would initialize charts here with Chart.js or similar
+                });
+            }, 1500);
+
+            // Notification bell click
+            const notificationIcon = document.querySelector('.notification-icon');
+            if (notificationIcon) {
+                notificationIcon.addEventListener('click', function() {
+                    alert('You have 3 new notifications');
+                    this.querySelector('.notification-badge').style.display = 'none';
+                });
+            }
+
+            // Responsive sidebar toggle for mobile
+            function handleResize() {
+                if (window.innerWidth <= 768) {
+                    document.querySelector('.sidebar').classList.add('mobile');
+                } else {
+                    document.querySelector('.sidebar').classList.remove('mobile');
+                }
+            }
+
+            window.addEventListener('resize', handleResize);
+            handleResize();
+        });
+    </script>
+</body>
+</html>

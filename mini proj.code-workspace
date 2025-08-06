@@ -1,0 +1,15 @@
+{
+	"folders": [
+		{
+			"name": "mini proj",
+			"path": "."
+		},
+		{
+			"name": "proj x",
+			"path": "../proj x"
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "mini proj"
+	}
+}
